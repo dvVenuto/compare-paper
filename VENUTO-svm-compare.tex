@@ -226,7 +226,7 @@ pairwise zero-one loss function \citep{learning-to-rank}. Learning to
 rank has been extensively studied, resulting in state-of-the-art
 algorithms such as SVMrank \citep{ranksvm}. However, we are interested
 in learning to compare with equality $y_i=0$ pairs, which to our
-knowledge has only been studied by \citet{rank-with-ties} where various paired comparison models were used and trained by gradient boosting.  Paired comparison models for predicting ties included the Bradley-Terry Model \citep{bt}, Thurstone-Mosteller Model \citep{tm} and General Linear Models with a tie calling threshold.  The Bradley-Terry model, which does not accommodate ties, can be extended to accommodate ties in paired comparisons directly \citep{bt-tie}. In this article we propose SVMcompare, a support vector algorithm for these
+knowledge has only been studied by \citet{rank-with-ties} where various paired comparison models were used and trained by gradient boosting.  Classical paired comparison models from the statistics literature include the Bradley-Terry model \citep{bt}, Thurstone-Mosteller Model \citep{tm}.  The Bradley-Terry model, which does not accommodate ties, can be extended to accommodate ties in paired comparisons directly \citep{bt-tie}. In this article we propose SVMcompare, a support vector algorithm for these
 data.
 
 The notation and organization of this article is as follows. We use
@@ -236,7 +236,7 @@ k_i$. In Section~\ref{sec:related} we discuss links with related work
 on classification and ranking, then in Section~\ref{sec:svm-compare}
 we propose a new algorithm: SVMcompare. We show results on 3
 illustrative simulated data sets and two real learning to rank sushi
-data set and chess datasets in Section~\ref{sec:results}, then discuss future work in
+data set in Section~\ref{sec:results} and on a chess dataset in Section~\ref{sec:results_chess}, then discuss future work in
 Section~\ref{sec:conclusions}.
 
 
@@ -263,20 +263,18 @@ problem.
 % $\mathbf x_i,\mathbf x_i'\in\RR^p$.
 
 \begin{figure}
-  \centering
-  \input{figure-norm-data}
-  \vskip -0.5cm
-  \caption{Geometric interpretation. \textbf{Left}: input feature pairs
-    $\mathbf x_i,\mathbf x_i'\in\RR^p$ are segments for $y_i=0$ and
-    arrows for $y_i\in\{-1,1\}$. The level curves of the ranking
-    function $r(\mathbf x)=||\mathbf x||_2^2$ are grey, and
-    differences $|r(\mathbf x')-r(\mathbf x)|\leq 1$ are considered
-    insignificant ($y_i=0$). \textbf{Middle}: in the enlarged feature
-    space, the ranking function is linear: $r(\mathbf x)=\mathbf
-    w^\intercal \Phi(\mathbf x)$. \textbf{Right}: two symmetric
-    hyperplanes $\mathbf w^\intercal[\Phi(\mathbf x_i')-\Phi(\mathbf
-    x_i)]\in\{-1,1\}$ are used to classify the difference vectors.}
-  \label{fig:norm-data}
+   \centering
+\input{figure-norm-data}
+\vskip -0.5cm
+
+	\caption{Geometric interpretation of paired comparison data and the decision boundaries of our support vector machine classifier. \textbf{Top}: input feature pairs
+		$\mathbf x_i,\mathbf x_i'\in\RR^p$ are segments for $y_i=0$ and
+		+    arrows for $y_i\in\{-1,1\}$. The level curves in grey show the ranking
+		+    function $r(\mathbf x)=||\mathbf x||_2^2$ used to generate the labels $y_i$ in this noiseless simulation. \textbf{Middle}: in the enlarged feature
+		space, the ranking function is linear: $r(\mathbf x)=\mathbf
+		w^\intercal \Phi(\mathbf x)$. \textbf{Bottom}: two symmetric
+		hyperplanes $\mathbf w^\intercal[\Phi(\mathbf x_i')-\Phi(\mathbf x_i)]\in\{-1,1\}$ in the difference space are the decision boundaries.}
+\label{fig:norm-data}
 \end{figure}
 
 \subsection{Comparison and ranking problems}
@@ -1034,7 +1032,8 @@ model performs better than the SVMrank methods in terms of test error,
 and it performs as well as the SVMrank methods in terms of test AUC.
 }
 
-\section{SVMcompare predict outcomes of chess games more accurately than ELO}
+\section{SVMcompare predicts outcomes of chess games more accurately than ELO}
+\label{sec:results_chess}
 
 In this section, we show that our SVMcompare algorithm can be used for
 highly accurate prediction of the outcome of chess matches. Chess is a
@@ -1091,7 +1090,9 @@ $1,2,3,4$.
 We then used the selected hyper-parameters to train a
 model using the first four months (Jan--Apr) of each year, and we used
 the learned model to predict on the test set for that year
-(May--Dec). We then computed the test AUC for each of the eight years. Since there are 3 labels $y\in\{-1,0,1\}$ corresponding to $\{$win, draw, loss$\}$ respectively, the trivial AUC is non-standard (not 0.5). In our trivial calculation, we obtain a FPR and TPR of 0 by predicting every observation as a negative class ($y=0$).  By predicting every observation as the most common positive class, we have obtained the maximum TPR without use any features.  Our predictions for the trivial model are therefore calculated with:
+(May--Dec). We then computed the test AUC for each of the eight years. 
+
+Our predictions for the baseline (trivial) model are therefore calculated with:
 \begin{equation}c_{\tau}(x)=
 \begin{cases} 1 &
 \text{ if } |
@@ -1100,18 +1101,19 @@ the learned model to predict on the test set for that year
 
 \end{cases}
 \end{equation}
-  We then obtain the FPR given all observations are predicted to be the most common positive prediction.  Since we have 2 distinct positive classes, it is highly unlikely that our TPR and FPR will be 1.0 through this method.
+
+Since there are 3 labels $y\in\{-1,0,1\}$ corresponding to $\{$win, draw, loss$\}$ respectively, the trivial AUC is non-standard (not 0.5). In our trivial calculation, we obtain a FPR and TPR of 0 by predicting every observation as a negative class ($y=0$).  By predicting every observation as the most common positive class, we have obtained the maximum TPR without use any features.  We then obtain the FPR given all observations are predicted to be the most common positive prediction.  Since we have 2 distinct positive classes, it is highly unlikely that our TPR and FPR will be 1.0 through this method.
 
 \subsection{Results and discussion}
 
 As shown in Figure~\ref{fig:chess}, the linear and polynomial SVM kernels have
 higher test AUC than the ELO and Glicko scoring systems.
 Additionally, linear and polynomial SVM models trained using only ELO
-and Glicko features perform worse than models using all features.  This suggests that the additional features computed in our model were
-relevant in learning models that performed better than ELO scores.  Models using a combination of ELO and Glicko features obtain an AUC that appears to be the median of the Glicko and ELO AUC values.  The model appears to be learning a combination of these features and therefore obtains an AUC intermediate of ELO and Glicko scores only.  The Gaussian kernel also preforms with a lower AUC with respect to the linear and polynomial kernels.  The fact that the linear kernel is more accurate than the Gaussian kernel suggests that the pattern is linear in the features we have computed.
+and Glicko features with lower AUC than models using all features.  This suggests that the additional features computed in our model were
+relevant in learning models that performed better than ELO scores.  Models using a combination of ELO and Glicko features obtain an AUC that appears to be the median of the Glicko and ELO AUC values.  The model appears to be learning a combination of these features and therefore obtains an AUC AUC that is between the AUC values of ELO or Glicko scores only.  The Gaussian kernel also has a lower AUC with respect to the linear and polynomial kernels.  The fact that the linear kernel is more accurate than the Gaussian kernel suggests that the pattern is linear in the features we have computed.
 
 Overall, our analysis of the chess match data suggests that the
-proposed SVMcompare model performs with a higher AUC than the existing
+proposed SVMcompare model has a higher AUC than the existing
 state-of-the-art ELO and Glicko scores.
 
 \begin{figure*}[t]
@@ -1149,11 +1151,9 @@ predicting outcomes of chess matches than the current FIDE ELO player
 ranking system, and that incorporating additional features into out
 model gives an increase in accuracy.
 
-For future work, it will be interesting to see if the same results are
-observed in learning to rank data from search engines. For scaling to
-these very large data sets, we would like to try algorithms based on
-smooth discriminative loss functions, such as stochastic gradient
-descent with a logistic loss.
+For future work, For future work, it will be interesting to explore other algorithms for learning ranking and comparison functions. For example, it will be interesting to explore online algorithms that can be updated in O(1) time for each new data point (e.g. the most recent chess match).  As SVM with SMO optimization is limited to relatively small data sets it would be interesting to to try algorithms based on
+smooth discriminative loss functions, such as stochastic gradient descent with a logistic loss for larger data sets.
+
 
 %\newpage
 %\textbf{Acknowledgements}: 
@@ -1165,6 +1165,8 @@ Thanks to Simon Lacoste-Julien and Hang Li for helpful discussions.
 
 \section*{Reproducible Research Statement}
 The informations and scripts used to produce the results in this paper can be obtained at :
+
+https://github.com/tdhock/rankSVMcompare
 
 https://github.com/dvVenuto/compare-paper
 
