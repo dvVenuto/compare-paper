@@ -263,17 +263,18 @@ problem.
 % $\mathbf x_i,\mathbf x_i'\in\RR^p$.
 
 \begin{figure}
-   \centering
+\centering
 \input{figure-norm-data}
 \vskip -0.5cm
 
 	\caption{Geometric interpretation of paired comparison data and the decision boundaries of our support vector machine classifier. \textbf{Top}: input feature pairs
 		$\mathbf x_i,\mathbf x_i'\in\RR^p$ are segments for $y_i=0$ and
-		+    arrows for $y_i\in\{-1,1\}$. The level curves in grey show the ranking
-		+    function $r(\mathbf x)=||\mathbf x||_2^2$ used to generate the labels $y_i$ in this noiseless simulation. \textbf{Middle}: in the enlarged feature
+		arrows for $y_i\in\{-1,1\}$. The level curves in grey show the ranking
+		function $r(\mathbf x)=||\mathbf x||_2^2$ used to generate the labels $y_i$ in this noiseless simulation. \textbf{Middle}: in the enlarged feature
 		space, the ranking function is linear: $r(\mathbf x)=\mathbf
 		w^\intercal \Phi(\mathbf x)$. \textbf{Bottom}: two symmetric
-		hyperplanes $\mathbf w^\intercal[\Phi(\mathbf x_i')-\Phi(\mathbf x_i)]\in\{-1,1\}$ in the difference space are the decision boundaries.}
+		hyperplanes $\mathbf w^\intercal[\Phi(\mathbf x_i')-\Phi(\mathbf
+		x_i)]\in\{-1,1\}$ in the difference space are the decision boundaries.}
 \label{fig:norm-data}
 \end{figure}
 
@@ -1092,8 +1093,8 @@ model using the first four months (Jan--Apr) of each year, and we used
 the learned model to predict on the test set for that year
 (May--Dec). We then computed the test AUC for each of the eight years. 
 
-Our predictions for the baseline (trivial) model are calculated with:
-\begin{equation}c_{\tau}(x)=
+Our predictions for the baseline (trivial) model are calculated by predicting either a win or loss for every match:
+\begin{equation}c_{\tau}(x,x')=
 \begin{cases} 1 &
 \text{ if } |
 \mathcal I_{-1}|<|\mathcal I_1| \\ -1
@@ -1102,7 +1103,7 @@ Our predictions for the baseline (trivial) model are calculated with:
 \end{cases}
 \end{equation}
 
-Since there are 3 labels $y\in\{-1,0,1\}$ corresponding to $\{$win, draw, loss$\}$ respectively, the trivial AUC is non-standard (not 0.5). In our trivial calculation, we obtain a FPR and TPR of 0 by predicting every observation as a negative class ($y=0$).  By predicting every observation as the most common positive class, we have obtained the maximum TPR without use any features.  We then obtain the FPR given all observations are predicted to be the most common positive prediction.  Since we have 2 distinct positive classes, it is highly unlikely that our TPR and FPR will be 1.0 through this method.
+Since there are 3 labels $y\in\{-1,0,1\}$ corresponding to $\{$win, draw, loss$\}$ respectively, the trivial AUC is non-standard (not 0.5). In our trivial calculation, we obtain a FPR and TPR of 0 by predicting a negative class for every match (draw or $y=0$).  In this method, the features are not used at all for the prediction.  By predicting every match as the most common positive class (win or draw), we have obtained the maximum TPR without any learning.  We then obtain the FPR given all observations are predicted to be the most common positive prediction (win or draw).  Since we have 2 distinct positive classes, it is highly unlikely that our TPR and FPR will be 1.0 through this method.
 
 \subsection{Results and discussion}
 
