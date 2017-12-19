@@ -1,3 +1,5 @@
-# compare-paper
+#compare-paper
+compare-paper =============
 
-hhh
+
+Support vector comparison machines
