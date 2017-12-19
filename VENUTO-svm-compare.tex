@@ -1110,7 +1110,7 @@ As shown in Figure~\ref{fig:chess}, the linear and polynomial SVM kernels have
 higher test AUC than the ELO and Glicko scoring systems.
 Additionally, linear and polynomial SVM models trained using only ELO
 and Glicko features with lower AUC than models using all features.  This suggests that the additional features computed in our model were
-relevant in learning models that performed better than ELO scores.  Models using a combination of ELO and Glicko features obtain an AUC that appears to be the median of the Glicko and ELO AUC values.  The model appears to be learning a combination of these features and therefore obtains an AUC AUC that is between the AUC values of ELO or Glicko scores only.  The Gaussian kernel also has a lower AUC with respect to the linear and polynomial kernels.  The fact that the linear kernel is more accurate than the Gaussian kernel suggests that the pattern is linear in the features we have computed.
+relevant in learning models that performed better than ELO scores.  Models using a combination of ELO and Glicko features obtain an AUC that appears to be between the Glicko or ELO model only AUC values.  The model appears to be learning a combination of these features.  The Gaussian kernel also has a lower AUC with respect to the linear and polynomial kernels.  The fact that the linear kernel is more accurate than the Gaussian kernel suggests that the pattern is linear in the features we have computed.
 
 Overall, our analysis of the chess match data suggests that the
 proposed SVMcompare model has a higher AUC than the existing
